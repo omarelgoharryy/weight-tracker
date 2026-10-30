@@ -370,6 +370,24 @@ textarea {
   font-size: 17px;
 }
 
+.measure-card {
+  min-height: 56px;
+  padding: 12px 16px;
+  border: 0;
+  background: var(--tape);
+  color: var(--tape-ink);
+  font-family: var(--rounded);
+  font-size: 18px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.measure-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px 12px;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .tape-marker {
     transition: left 400ms ease;

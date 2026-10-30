@@ -1,18 +1,32 @@
 import { useState } from 'preact/hooks';
-import { healthNoteDue, newMilestones, pickMilestone, reachedMilestones } from '../calc/signals';
+import { healthNoteDue, measurementsDue, newMilestones, pickMilestone, reachedMilestones } from '../calc/signals';
 import { needsTypoConfirm, validateWeightKg } from '../calc/validation';
 import { ConfirmDialog } from '../components/ConfirmDialog';
+import { MeasurementCard } from '../components/MeasurementCard';
 import { SummaryCard } from '../components/SummaryCard';
 import { putWeight, saveSettings } from '../db/db';
 import { messageFor } from '../encouragement/select';
 import { formatDate, todayISO } from '../lib/dates';
 import { displayToKg, kgToDisplay, parseDecimal } from '../lib/units';
+import { MeasurementForm } from './MeasurementForm';
 import type { ScreenProps } from '../state/useApp';
 import type { Settings, WeightEntry } from '../types';
 
 export function Today({ data, today, refresh }: ScreenProps) {
-  const { settings, weights } = data;
+  const { settings, weights, measurements } = data;
+  const [measuringDate, setMeasuringDate] = useState<string | null>(null);
   const milestoneToday = settings.latestMilestone?.date === today ? settings.latestMilestone.id : undefined;
+
+  if (measuringDate)
+    return (
+      <MeasurementForm
+        date={measuringDate}
+        initial={measurements.find((m) => m.date === measuringDate)}
+        settings={settings}
+        onSaved={refresh}
+        onDone={() => setMeasuringDate(null)}
+      />
+    );
 
   return (
     <>
@@ -21,6 +35,9 @@ export function Today({ data, today, refresh }: ScreenProps) {
         {messageFor(weights, today, milestoneToday)}
       </p>
       <WeighIn key={today} data={data} today={today} refresh={refresh} />
+      {measurementsDue(measurements, settings.measurementDay, today) && (
+        <MeasurementCard onOpen={() => setMeasuringDate(todayISO())} />
+      )}
       <SummaryCard data={data} today={today} />
       {healthNoteDue(weights, settings.healthNoteDismissedAt, today) && (
         <aside class="note">
