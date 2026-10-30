@@ -1,6 +1,7 @@
 import { useState } from 'preact/hooks';
 import { InstallBanner } from './components/InstallBanner';
 import { TabBar, type Tab } from './components/TabBar';
+import { Progress } from './screens/Progress';
 import { Setup } from './screens/Setup';
 import { Today } from './screens/Today';
 import { useApp } from './state/useApp';
@@ -27,6 +28,7 @@ export function App() {
       <main class="screen">
         <InstallBanner />
         {tab === 'today' && <Today data={data} today={today} refresh={refresh} />}
+        {tab === 'progress' && <Progress data={data} today={today} refresh={refresh} />}
       </main>
       <TabBar tab={tab} onChange={setTab} />
     </>

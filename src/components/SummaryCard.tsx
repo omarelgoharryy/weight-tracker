@@ -1,13 +1,7 @@
 import { percentToGoal, startingWeight, totalLost } from '../calc/stats';
 import { streak } from '../calc/signals';
-import { formatWeight } from '../lib/units';
+import { formatChange, formatWeight } from '../lib/units';
 import type { AppData, ISODate } from '../types';
-
-function formatChange(lost: number, unit: AppData['settings']['weightUnit']): string {
-  const size = formatWeight(Math.abs(lost), unit);
-  if (size.startsWith('0.0 ')) return size;
-  return lost > 0 ? `−${size}` : `+${size}`;
-}
 
 export function SummaryCard({ data, today }: { data: AppData; today: ISODate }) {
   const { settings, weights } = data;

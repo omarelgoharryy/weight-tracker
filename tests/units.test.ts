@@ -1,4 +1,4 @@
-import { displayToCm, displayToKg, formatWeight, kgToDisplay, parseDecimal } from '../src/lib/units';
+import { displayToCm, displayToKg, formatChange, formatWeight, kgToDisplay, parseDecimal } from '../src/lib/units';
 
 test('parseDecimal accepts dot and comma, rejects junk', () => {
   expect(parseDecimal('82.5')).toBe(82.5);
@@ -18,5 +18,10 @@ test('every 0.1 lb value survives a round trip to the same displayed value', () 
 test('conversions use exact factors', () => {
   expect(displayToKg(1, 'lb')).toBeCloseTo(0.45359237, 8);
   expect(displayToCm(1, 'in')).toBe(2.54);
+});
+test('formatChange signs a loss as minus and a gain as plus', () => {
+  expect(formatChange(2, 'kg')).toBe('−2.0 kg');
+  expect(formatChange(-2, 'kg')).toBe('+2.0 kg');
+  expect(formatChange(0.01, 'kg')).toBe('0.0 kg');
 });
 test('formatWeight shows one decimal and the unit', () => expect(formatWeight(81.65, 'kg')).toBe('81.7 kg'));

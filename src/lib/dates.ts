@@ -31,3 +31,6 @@ export const formatDate = (date: ISODate): string =>
     year: 'numeric',
     timeZone: 'UTC',
   });
+
+export const formatShortDate = (date: ISODate): string =>
+  new Date(toUTC(date)).toLocaleDateString(undefined, { day: 'numeric', month: 'short', timeZone: 'UTC' });
