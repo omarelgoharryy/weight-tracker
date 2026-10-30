@@ -3,6 +3,7 @@ import { InstallBanner } from './components/InstallBanner';
 import { TabBar, type Tab } from './components/TabBar';
 import { History } from './screens/History';
 import { Progress } from './screens/Progress';
+import { Settings } from './screens/Settings';
 import { Setup } from './screens/Setup';
 import { Today } from './screens/Today';
 import { useApp } from './state/useApp';
@@ -28,9 +29,12 @@ export function App() {
     <>
       <main class="screen">
         <InstallBanner />
-        {tab === 'today' && <Today data={data} today={today} refresh={refresh} />}
+        {tab === 'today' && (
+          <Today data={data} today={today} refresh={refresh} onOpenSettings={() => setTab('settings')} />
+        )}
         {tab === 'progress' && <Progress data={data} today={today} refresh={refresh} />}
         {tab === 'history' && <History data={data} today={today} refresh={refresh} />}
+        {tab === 'settings' && <Settings data={data} today={today} refresh={refresh} />}
       </main>
       <TabBar tab={tab} onChange={setTab} />
     </>

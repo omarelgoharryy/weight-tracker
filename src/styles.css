@@ -549,6 +549,28 @@ textarea {
   gap: 6px;
 }
 
+.file-button {
+  position: relative;
+  display: block;
+  min-height: 44px;
+  line-height: 42px;
+  text-align: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.file-button input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0;
+}
+
+.file-button:focus-within {
+  outline: 3px solid var(--pine);
+  outline-offset: 2px;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .tape-marker {
     transition: left 400ms ease;

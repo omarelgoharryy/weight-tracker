@@ -1,6 +1,7 @@
 import { useState } from 'preact/hooks';
-import { healthNoteDue, measurementsDue, newMilestones, pickMilestone, reachedMilestones } from '../calc/signals';
+import { backupNudgeDue, healthNoteDue, measurementsDue, newMilestones, pickMilestone, reachedMilestones } from '../calc/signals';
 import { needsTypoConfirm, validateWeightKg } from '../calc/validation';
+import { BackupNudge } from '../components/BackupNudge';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { MeasurementCard } from '../components/MeasurementCard';
 import { SummaryCard } from '../components/SummaryCard';
@@ -12,7 +13,7 @@ import { MeasurementForm } from './MeasurementForm';
 import type { ScreenProps } from '../state/useApp';
 import type { Settings, WeightEntry } from '../types';
 
-export function Today({ data, today, refresh }: ScreenProps) {
+export function Today({ data, today, refresh, onOpenSettings }: ScreenProps & { onOpenSettings(): void }) {
   const { settings, weights, measurements } = data;
   const [measuringDate, setMeasuringDate] = useState<string | null>(null);
   const milestoneToday = settings.latestMilestone?.date === today ? settings.latestMilestone.id : undefined;
@@ -39,6 +40,7 @@ export function Today({ data, today, refresh }: ScreenProps) {
         <MeasurementCard onOpen={() => setMeasuringDate(todayISO())} />
       )}
       <SummaryCard data={data} today={today} />
+      {backupNudgeDue(settings, weights, today) && <BackupNudge onOpen={onOpenSettings} />}
       {healthNoteDue(weights, settings.healthNoteDismissedAt, today) && (
         <aside class="note">
           <p>

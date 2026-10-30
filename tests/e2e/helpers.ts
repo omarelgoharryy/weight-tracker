@@ -42,7 +42,42 @@ export async function seedWeights(page: Page, entries: { date: string; kg: numbe
   await page.getByRole('tab', { name: 'Today' }).waitFor();
 }
 
-export const logYesterday = (page: Page, kg: number) => seedWeights(page, [{ date: daysAgoISO(1), kg }]);
+export const getCelebrated = (page: Page) =>
+  page.evaluate(
+    () =>
+      new Promise<string[]>((resolve) => {
+        const open = indexedDB.open('weight-tracker');
+        open.onsuccess = () => {
+          const get = open.result.transaction('settings').objectStore('settings').get('app');
+          get.onsuccess = () => {
+            open.result.close();
+            resolve(get.result.celebratedMilestones);
+          };
+        };
+      }),
+  );
+
+export const setCelebrated = (page: Page, ids: string[]) =>
+  page.evaluate(
+    (milestones) =>
+      new Promise<void>((resolve) => {
+        const open = indexedDB.open('weight-tracker');
+        open.onsuccess = () => {
+          const store = open.result.transaction('settings', 'readwrite').objectStore('settings');
+          const get = store.get('app');
+          get.onsuccess = () => {
+            const put = store.put({ ...get.result, celebratedMilestones: milestones }, 'app');
+            put.onsuccess = () => {
+              open.result.close();
+              resolve();
+            };
+          };
+        };
+      }),
+    ids,
+  );
+
+export const logYesterday =(page: Page, kg: number) => seedWeights(page, [{ date: daysAgoISO(1), kg }]);
 
 export const daysAgoISO =(days: number): string => {
   const d = new Date();
