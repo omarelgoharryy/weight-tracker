@@ -1,8 +1,8 @@
 import { useState } from 'preact/hooks';
 import { InstallBanner } from './components/InstallBanner';
 import { TabBar, type Tab } from './components/TabBar';
-import { formatDate } from './lib/dates';
 import { Setup } from './screens/Setup';
+import { Today } from './screens/Today';
 import { useApp } from './state/useApp';
 
 export function App() {
@@ -26,7 +26,7 @@ export function App() {
     <>
       <main class="screen">
         <InstallBanner />
-        {tab === 'today' && <h1 data-testid="today-date">{formatDate(today)}</h1>}
+        {tab === 'today' && <Today data={data} today={today} refresh={refresh} />}
       </main>
       <TabBar tab={tab} onChange={setTab} />
     </>
