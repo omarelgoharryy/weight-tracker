@@ -514,6 +514,41 @@ textarea {
   border-top: 2px dashed var(--ink);
 }
 
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.entries {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entries li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.entries strong {
+  display: block;
+  font-family: var(--rounded);
+  font-size: 19px;
+}
+
+.entry-actions {
+  display: flex;
+  flex: none;
+  gap: 6px;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .tape-marker {
     transition: left 400ms ease;
