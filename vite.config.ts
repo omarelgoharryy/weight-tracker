@@ -17,8 +17,8 @@ export default defineConfig({
         display: 'standalone',
         start_url: '/weight-tracker/',
         scope: '/weight-tracker/',
-        background_color: '#FFE4D6',
-        theme_color: '#FFE4D6',
+        background_color: '#CDF1EC',
+        theme_color: '#CDF1EC',
         icons: [
           { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
           { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },

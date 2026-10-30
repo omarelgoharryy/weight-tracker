@@ -1,4 +1,4 @@
-const SPARK_COLOURS = ['#f2542d', '#ffc12e', '#2fb486', '#3b8be0', '#e0559a'];
+const SPARK_COLOURS = ['#0d9f9c', '#ffc12e', '#7cc242', '#3b8be0', '#2dd4c4'];
 
 export const reducedMotion = (): boolean => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 

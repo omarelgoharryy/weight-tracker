@@ -1,28 +1,28 @@
 :root {
   color-scheme: light dark;
-  --ground: #ffe4d6;
+  --ground: #cdf1ec;
   --card: #ffffff;
   --field: color-mix(in srgb, var(--ground) 55%, var(--card));
-  --ink: #3a2a25;
-  --muted: #6e5449;
-  --soft: #ffc9b3;
-  --action: #f2542d;
-  --on-action: #2a120b;
-  --action-text: #c93a17;
-  --alert: #b3321a;
-  --focus: #c93a17;
-  --dim: rgb(58 42 37 / 45%);
+  --ink: #12302f;
+  --muted: #3f5f5d;
+  --soft: #9fe3da;
+  --action: #0d7f7d;
+  --on-action: #ffffff;
+  --action-text: #0a6b69;
+  --alert: #b4234a;
+  --focus: #0a6b69;
+  --dim: rgb(18 48 47 / 45%);
   --bar: #ffffff;
 
-  --tint-1: #ffe4d6;
+  --tint-1: #cdf1ec;
   --tint-2: #ffefc2;
-  --tint-3: #d6f2e3;
+  --tint-3: #e6f3c4;
   --tint-4: #dcebff;
 
   --hue: var(--action);
-  --hue-neck: #16857a;
+  --hue-neck: #6a7d10;
   --hue-chest: #2a6fc4;
-  --hue-waist: #d6401b;
+  --hue-waist: #0d7f7d;
   --hue-hips: #c23c86;
   --hue-arm: #a86a00;
   --hue-thigh: #2b8a4e;
@@ -47,8 +47,8 @@ html[data-tab='progress'] {
 }
 
 html[data-tab='history'] {
-  --ground: #d6f2e3;
-  --soft: #ace6c8;
+  --ground: #e6f3c4;
+  --soft: #cfe68f;
 }
 
 html[data-tab='settings'] {
@@ -58,29 +58,30 @@ html[data-tab='settings'] {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --ground: #3a1c12;
-    --card: #55291b;
-    --ink: #fff1e9;
-    --muted: #e0c6b9;
+    --ground: #0c3336;
+    --card: #124a4d;
+    --ink: #e9fbf8;
+    --muted: #bfdeda;
     --soft: color-mix(in srgb, var(--action) 36%, var(--card));
-    --action: #ff7a55;
-    --action-text: #ffa98f;
-    --alert: #ffc2b1;
-    --focus: #ffa98f;
+    --action: #2dd4c4;
+    --on-action: #04211f;
+    --action-text: #7be8dc;
+    --alert: #ffc0cf;
+    --focus: #7be8dc;
     --dim: rgb(0 0 0 / 60%);
     --bar: color-mix(in srgb, var(--ground) 72%, #000000);
 
-    --tint-1: #7f3b24;
+    --tint-1: #14696b;
     --tint-2: #6f5414;
-    --tint-3: #1f6b4d;
+    --tint-3: #4a6a1a;
     --tint-4: #265a92;
 
-    --hue-neck: #4fd3c4;
+    --hue-neck: #c9dc6e;
     --hue-chest: #7db6ff;
-    --hue-waist: #ff8c6b;
+    --hue-waist: #4fe0d0;
     --hue-hips: #f58cc4;
     --hue-arm: #f2c04f;
-    --hue-thigh: #6fd894;
+    --hue-thigh: #7fe0a0;
     --hue-fat: #f08ab8;
   }
 
@@ -91,9 +92,9 @@ html[data-tab='settings'] {
   }
 
   html[data-tab='history'] {
-    --ground: #0f3324;
-    --card: #1a4a37;
-    --soft: color-mix(in srgb, #6fd894 30%, var(--card));
+    --ground: #26340c;
+    --card: #384c14;
+    --soft: color-mix(in srgb, #7fe0a0 30%, var(--card));
   }
 
   html[data-tab='settings'] {
@@ -1086,7 +1087,7 @@ html[data-tab='settings'] .tab-marker::before {
 }
 
 .field select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' fill='none' stroke='%23c93a17' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' fill='none' stroke='%230a6b69' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 14px center;
   background-size: 16px;

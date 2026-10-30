@@ -2,52 +2,53 @@
 name: Weight Tracker
 description: A warm, colourful daily weight log where every tap answers back.
 colors:
-  action: "#f2542d"
-  action-night: "#ff7a55"
-  action-text: "#c93a17"
-  action-text-night: "#ffa98f"
-  on-action: "#2a120b"
+  action: "#0d7f7d"
+  action-night: "#2dd4c4"
+  action-text: "#0a6b69"
+  action-text-night: "#7be8dc"
+  on-action: "#ffffff"
+  on-action-night: "#04211f"
   card-day: "#ffffff"
-  ink-day: "#3a2a25"
-  muted-day: "#6e5449"
-  ink-night: "#fff1e9"
-  muted-night: "#e0c6b9"
-  ground-today: "#ffe4d6"
+  ink-day: "#12302f"
+  muted-day: "#3f5f5d"
+  ink-night: "#e9fbf8"
+  muted-night: "#bfdeda"
+  ground-today: "#cdf1ec"
   ground-progress: "#ffefc2"
-  ground-history: "#d6f2e3"
+  ground-history: "#e6f3c4"
   ground-settings: "#dcebff"
-  ground-today-night: "#3a1c12"
+  ground-today-night: "#0c3336"
   ground-progress-night: "#362909"
-  ground-history-night: "#0f3324"
+  ground-history-night: "#26340c"
   ground-settings-night: "#12294a"
-  card-today-night: "#55291b"
+  card-today-night: "#124a4d"
   card-progress-night: "#4d3a12"
-  card-history-night: "#1a4a37"
+  card-history-night: "#384c14"
   card-settings-night: "#1d3d66"
-  soft-today: "#ffc9b3"
+  soft-today: "#9fe3da"
   soft-progress: "#ffdf8a"
-  soft-history: "#ace6c8"
+  soft-history: "#cfe68f"
   soft-settings: "#bcd8fb"
-  tint-1-night: "#7f3b24"
+  tint-1-night: "#14696b"
   tint-2-night: "#6f5414"
-  tint-3-night: "#1f6b4d"
+  tint-3-night: "#4a6a1a"
   tint-4-night: "#265a92"
-  hue-neck: "#16857a"
+  hue-neck: "#6a7d10"
   hue-chest: "#2a6fc4"
-  hue-waist: "#d6401b"
+  hue-waist: "#0d7f7d"
   hue-hips: "#c23c86"
   hue-arm: "#a86a00"
   hue-thigh: "#2b8a4e"
   hue-fat: "#a8326b"
-  hue-neck-night: "#4fd3c4"
+  hue-neck-night: "#c9dc6e"
   hue-chest-night: "#7db6ff"
-  hue-waist-night: "#ff8c6b"
+  hue-waist-night: "#4fe0d0"
   hue-hips-night: "#f58cc4"
   hue-arm-night: "#f2c04f"
-  hue-thigh-night: "#6fd894"
+  hue-thigh-night: "#7fe0a0"
   hue-fat-night: "#f08ab8"
-  alert-day: "#b3321a"
-  alert-night: "#ffc2b1"
+  alert-day: "#b4234a"
+  alert-night: "#ffc0cf"
 typography:
   reading:
     fontFamily: "Nunito Variable, system-ui, -apple-system, sans-serif"
@@ -144,9 +145,9 @@ Two earlier looks were rejected for being static and monotone, so colour and mot
 
 ## Colors
 
-Each tab owns one ground: peach for Today, honey for Progress, mint for History, sky for Settings. Dark mode keeps the same four hues as deep grounds with saturated cards, never a neutral grey. The ground crossfades when the tab changes and the status bar follows it. `--soft` and `--field` derive from the ground, so bars, selected states and fields shift with each screen.
+Each tab owns one ground: aqua for Today, honey for Progress, pistachio for History, sky for Settings. Dark mode keeps the same four hues as deep grounds with saturated cards, never a neutral grey. The ground crossfades when the tab changes and the status bar follows it. `--soft` and `--field` derive from the ground, so bars, selected states and fields shift with each screen.
 
-Tomato is the one action colour. It marks what can be pressed, the selected bar and the goal fill. Each measurement owns one hue on every screen, and stat tiles cycle through the four grounds as tints.
+Teal is the one action colour. It marks what can be pressed, the selected bar and the goal fill. Each measurement owns one hue on every screen, and stat tiles cycle through the four grounds as tints.
 
 No red or alarm colour on normal weight change. A gain and a loss differ by their sign, never by colour alone.
 
@@ -168,7 +169,7 @@ Large, soft and consistent: 22px cards, 14px fields, full pills for buttons, 28p
 
 ## Components
 
-- **Primary button:** full-width tomato pill, 54px. After saving it shows a drawn tick and "Saved", then settles back.
+- **Primary button:** full-width teal pill, 54px. After saving it shows a drawn tick and "Saved", then settles back.
 - **Week bars:** seven tappable bars, each showing that day's reading. Heights show the week's shape rather than absolute weight. Days without an entry show a quiet stub, and today's stub pulses gently. Missing days are never scolded.
 - **Goal track:** 12px fill at the true percentage, labelled at both ends.
 - **Stat tiles:** two columns of tinted tiles. An odd last tile takes the full width.
@@ -191,6 +192,7 @@ Do:
 Don't:
 
 - Don't return to one colour across screens, or to grey dark-mode cards.
+- Don't use reddish orange, peach or terracotta anywhere. The owner rejected them.
 - Don't use the action colour on anything that can't be pressed, other than the selected bar and goal fill.
 - Don't bounce entrances, and don't animate from `scale(0)`.
 - Don't show streak pressure, scolding copy or alarm colours.
