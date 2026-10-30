@@ -17,7 +17,7 @@ import { formatDate } from '../lib/dates';
 import { cmToDisplay, formatChange, formatLength, formatWeight, kgToDisplay } from '../lib/units';
 import type { ScreenProps } from '../state/useApp';
 import { MEASUREMENT_KEYS } from '../types';
-import type { AppData } from '../types';
+import type { AppData, ISODate } from '../types';
 import { measurementLabel } from './MeasurementForm';
 
 const RANGES: { id: Range; label: string }[] = [
@@ -27,12 +27,12 @@ const RANGES: { id: Range; label: string }[] = [
   { id: 'all', label: 'All' },
 ];
 
-function Stats({ data }: { data: AppData }) {
+function Stats({ data, today }: { data: AppData; today: ISODate }) {
   const { settings, weights } = data;
   const unit = settings.weightUnit;
   const average = averageLossPerWeek(weights);
   const percent = percentToGoal(weights, settings.goalKg);
-  const projected = projectGoalDate(weights, settings.goalKg);
+  const projected = projectGoalDate(weights, settings.goalKg, today);
   const bodyMass = settings.heightCm === undefined ? null : bmi(weights, settings.heightCm);
 
   const rows: [string, string][] = [
@@ -120,7 +120,7 @@ export function Progress({ data, today }: ScreenProps) {
               Goal
             </li>
           </ul>
-          <Stats data={data} />
+          <Stats data={data} today={today} />
         </section>
       )}
 

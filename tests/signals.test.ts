@@ -1,5 +1,6 @@
 import {
   backupNudgeDue,
+  celebrateReached,
   healthNoteDue,
   measurementsDue,
   milestoneLabel,
@@ -54,6 +55,12 @@ test('milestones have readable labels', () => {
   expect(milestoneLabel('lost-20lb')).toBe('20 lb lost');
   expect(milestoneLabel('goal-25')).toBe('25% of the way to your goal');
   expect(milestoneLabel('goal-reached')).toBe('your goal weight');
+});
+test('a unit switch quietly marks what was already earned in the new unit', () => {
+  const data = dailySeries('2026-01-01', 100, 100, -0.1); // about 9.6 kg lost
+  const celebrated = celebrateReached(data, 50, 'lb', ['lost-5kg']);
+  expect(celebrated).toEqual(expect.arrayContaining(['lost-5kg', 'lost-10lb', 'lost-20lb']));
+  expect(newMilestones(reachedMilestones(data, 50, 'lb'), celebrated)).toEqual([]);
 });
 test('changing the goal resets only goal milestones', () =>
   expect(resetGoalMilestones(['lost-5kg', 'goal-25', 'goal-reached'])).toEqual(['lost-5kg']));

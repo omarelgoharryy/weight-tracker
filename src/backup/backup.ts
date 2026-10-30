@@ -4,6 +4,7 @@ import { MEASUREMENT_KEYS } from '../types';
 import type { AppData, ISODate, MeasurementEntry, Settings, WeightEntry } from '../types';
 
 const VERSION = 1;
+const REVOKE_DELAY_MS = 60_000;
 const INVALID = "This file doesn't look like a valid Weight Tracker backup.";
 
 export type ParseResult =
@@ -121,19 +122,21 @@ function downloadFile(file: File): void {
   link.href = url;
   link.download = file.name;
   link.click();
-  URL.revokeObjectURL(url);
+  setTimeout(() => URL.revokeObjectURL(url), REVOKE_DELAY_MS);
 }
 
-export async function shareBackup(json: string, fileName: string): Promise<'saved' | 'cancelled'> {
+export type ShareResult = 'saved' | 'downloaded' | 'cancelled' | 'failed';
+
+export async function shareBackup(json: string, fileName: string): Promise<ShareResult> {
   const file = new File([json], fileName, { type: 'application/json' });
   if (navigator.canShare?.({ files: [file] })) {
     try {
       await navigator.share({ files: [file] });
       return 'saved';
     } catch (error) {
-      if (error instanceof DOMException && error.name === 'AbortError') return 'cancelled';
+      return error instanceof DOMException && error.name === 'AbortError' ? 'cancelled' : 'failed';
     }
   }
   downloadFile(file);
-  return 'saved';
+  return 'downloaded';
 }

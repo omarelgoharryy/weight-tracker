@@ -11,6 +11,8 @@ import {
 import { daysBetween } from '../src/lib/dates';
 import { dailySeries, w } from './helpers';
 
+const TODAY = '2026-10-22';
+
 test('starting weight is the earliest date, including a backdated entry', () => {
   const data = [w('2026-10-01', 90), w('2026-10-02', 89)];
   expect(startingWeight(data)).toBe(90);
@@ -29,15 +31,25 @@ test('averageLossPerWeek needs entries spanning at least 7 days', () => {
 });
 test('projectGoalDate on a steady 1 kg per week loss', () => {
   const data = dailySeries('2026-10-01', 22, 100, -1 / 7);
-  const date = projectGoalDate(data, 90)!;
+  const date = projectGoalDate(data, 90, TODAY)!;
   expect(daysBetween('2026-10-22', date)).toBeGreaterThan(40);
   expect(daysBetween('2026-10-22', date)).toBeLessThan(70);
 });
 test('projectGoalDate is hidden when too early, trending up, flat or at goal', () => {
-  expect(projectGoalDate(dailySeries('2026-10-01', 14, 100, -0.1), 90)).toBeNull(); // spans 13 days
-  expect(projectGoalDate(dailySeries('2026-10-01', 30, 100, 0.1), 90)).toBeNull();
-  expect(projectGoalDate(dailySeries('2026-10-01', 30, 100, 0), 90)).toBeNull();
-  expect(projectGoalDate(dailySeries('2026-10-01', 30, 89, -0.1), 90)).toBeNull();
+  expect(projectGoalDate(dailySeries('2026-10-01', 14, 100, -0.1), 90, TODAY)).toBeNull(); // spans 13 days
+  expect(projectGoalDate(dailySeries('2026-10-01', 30, 100, 0.1), 90, TODAY)).toBeNull();
+  expect(projectGoalDate(dailySeries('2026-10-01', 30, 100, 0), 90, TODAY)).toBeNull();
+  expect(projectGoalDate(dailySeries('2026-10-01', 30, 89, -0.1), 90, TODAY)).toBeNull();
+});
+test('a flat series never projects a date, whatever the rounding noise', () => {
+  for (let tenths = 900; tenths < 1500; tenths++) {
+    expect(projectGoalDate(dailySeries('2026-09-01', 30, tenths / 10, 0), 80, '2026-10-22')).toBeNull();
+  }
+});
+test('a projection already in the past is hidden', () => {
+  const data = dailySeries('2026-01-01', 60, 100, -0.1);
+  expect(projectGoalDate(data, 90, '2026-03-05')).not.toBeNull();
+  expect(projectGoalDate(data, 90, '2026-10-30')).toBeNull();
 });
 test('bmi uses latest trend', () => expect(bmi([w('2026-10-01', 80)], 200)).toBe(20));
 test('lowest and current weight', () => {
@@ -48,6 +60,6 @@ test('lowest and current weight', () => {
 test('stats return null for no entries', () => {
   for (const f of [startingWeight, lowestWeight, currentWeight, totalLost, averageLossPerWeek]) expect(f([])).toBeNull();
   expect(percentToGoal([], 80)).toBeNull();
-  expect(projectGoalDate([], 80)).toBeNull();
+  expect(projectGoalDate([], 80, TODAY)).toBeNull();
   expect(bmi([], 180)).toBeNull();
 });

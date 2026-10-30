@@ -15,17 +15,17 @@ import type { Settings, WeightEntry } from '../types';
 
 export function Today({ data, today, refresh, onOpenSettings }: ScreenProps & { onOpenSettings(): void }) {
   const { settings, weights, measurements } = data;
-  const [measuringDate, setMeasuringDate] = useState<string | null>(null);
+  const [measuring, setMeasuring] = useState(false);
   const milestoneToday = settings.latestMilestone?.date === today ? settings.latestMilestone.id : undefined;
 
-  if (measuringDate)
+  if (measuring)
     return (
       <MeasurementForm
-        date={measuringDate}
-        initial={measurements.find((m) => m.date === measuringDate)}
+        date={today}
+        initial={measurements.find((m) => m.date === today)}
         settings={settings}
         onSaved={refresh}
-        onDone={() => setMeasuringDate(null)}
+        onDone={() => setMeasuring(false)}
       />
     );
 
@@ -37,7 +37,7 @@ export function Today({ data, today, refresh, onOpenSettings }: ScreenProps & { 
       </p>
       <WeighIn key={today} data={data} today={today} refresh={refresh} />
       {measurementsDue(measurements, settings.measurementDay, today) && (
-        <MeasurementCard onOpen={() => setMeasuringDate(todayISO())} />
+        <MeasurementCard onOpen={() => setMeasuring(true)} />
       )}
       <SummaryCard data={data} today={today} />
       {backupNudgeDue(settings, weights, today) && <BackupNudge onOpen={onOpenSettings} />}

@@ -61,6 +61,21 @@ test('shareBackup reports a cancelled share sheet', async () => {
   });
   expect(await shareBackup('{}', 'a.json')).toBe('cancelled');
 });
+test('shareBackup reports a failed share instead of claiming success', async () => {
+  vi.stubGlobal('navigator', {
+    canShare: () => true,
+    share: () => Promise.reject(new DOMException('', 'NotAllowedError')),
+  });
+  expect(await shareBackup('{}', 'a.json')).toBe('failed');
+});
+test('shareBackup reports a download when sharing is unavailable', async () => {
+  const click = vi.fn();
+  vi.stubGlobal('navigator', {});
+  vi.stubGlobal('document', { createElement: () => ({ click }) });
+  vi.stubGlobal('URL', { createObjectURL: () => 'blob:x', revokeObjectURL: () => {} });
+  expect(await shareBackup('{}', 'a.json')).toBe('downloaded');
+  expect(click).toHaveBeenCalledOnce();
+});
 test('shareBackup reports a completed share', async () => {
   vi.stubGlobal('navigator', { canShare: () => true, share: () => Promise.resolve() });
   expect(await shareBackup('{}', 'a.json')).toBe('saved');

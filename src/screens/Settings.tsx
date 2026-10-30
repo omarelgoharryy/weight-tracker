@@ -1,6 +1,6 @@
 import { useState } from 'preact/hooks';
 import { backupFileName, buildBackup, parseBackup, shareBackup, type ParseResult } from '../backup/backup';
-import { resetGoalMilestones } from '../calc/signals';
+import { celebrateReached, resetGoalMilestones } from '../calc/signals';
 import { validateHeightCm, validateWeightKg } from '../calc/validation';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { replaceAll, saveSettings } from '../db/db';
@@ -28,6 +28,7 @@ export function Settings({ data, today, refresh }: ScreenProps) {
   const [error, setError] = useState('');
   const [status, setStatus] = useState('');
   const [backup, setBackup] = useState<ParsedBackup | null>(null);
+  const [exporting, setExporting] = useState(false);
 
   async function update(next: SettingsData, done: string) {
     setError('');
@@ -43,7 +44,14 @@ export function Settings({ data, today, refresh }: ScreenProps) {
 
   function changeWeightUnit(unit: WeightUnit) {
     setGoal(kgToDisplay(settings.goalKg, unit).toFixed(1));
-    void update({ ...settings, weightUnit: unit }, 'Units updated.');
+    void update(
+      {
+        ...settings,
+        weightUnit: unit,
+        celebratedMilestones: celebrateReached(data.weights, settings.goalKg, unit, settings.celebratedMilestones),
+      },
+      'Units updated.',
+    );
   }
 
   function changeLengthUnit(unit: LengthUnit) {
@@ -54,6 +62,10 @@ export function Settings({ data, today, refresh }: ScreenProps) {
   function saveGoal() {
     const value = parseDecimal(goal);
     if (value === null) return setError('Enter your goal weight as a number.');
+    if (value.toFixed(1) === kgToDisplay(settings.goalKg, settings.weightUnit).toFixed(1)) {
+      setError('');
+      return setStatus('Goal saved.');
+    }
     const goalKg = displayToKg(value, settings.weightUnit);
     const invalid = validateWeightKg(goalKg);
     if (invalid) return setError(invalid);
@@ -83,8 +95,16 @@ export function Settings({ data, today, refresh }: ScreenProps) {
   async function exportBackup() {
     setError('');
     setStatus('');
-    const saved = await shareBackup(buildBackup(data, new Date().toISOString()), backupFileName(today));
-    if (saved === 'saved') await update({ ...settings, lastBackupAt: new Date().toISOString() }, 'Backup saved.');
+    setExporting(true);
+    const result = await shareBackup(buildBackup(data, new Date().toISOString()), backupFileName(today));
+    setExporting(false);
+    if (result === 'failed') setError('Your backup was not saved. Try again.');
+    if (result === 'saved') await update({ ...settings, lastBackupAt: new Date().toISOString() }, 'Backup saved.');
+    if (result === 'downloaded')
+      await update(
+        { ...settings, lastBackupAt: new Date().toISOString() },
+        'Backup downloaded. Check that the file is in your Downloads.',
+      );
   }
 
   async function chooseFile(event: Event) {
@@ -104,6 +124,10 @@ export function Settings({ data, today, refresh }: ScreenProps) {
     try {
       await replaceAll(parsed.data);
       await refresh();
+      const { goalKg, weightUnit, heightCm, lengthUnit, sex: restoredSex } = parsed.data.settings;
+      setGoal(kgToDisplay(goalKg, weightUnit).toFixed(1));
+      setHeight(heightCm === undefined ? '' : cmToDisplay(heightCm, lengthUnit).toFixed(1));
+      setSex(restoredSex ?? '');
       setStatus('Backup restored.');
     } catch {
       setError('The backup was not restored. Your data has not changed.');
@@ -207,7 +231,7 @@ export function Settings({ data, today, refresh }: ScreenProps) {
         <p class="hint" data-testid="last-backup">
           Last backup: {settings.lastBackupAt ? formatDate(settings.lastBackupAt.slice(0, 10)) : 'Never'}
         </p>
-        <button class="primary" onClick={() => void exportBackup()}>
+        <button class="primary" disabled={exporting} onClick={() => void exportBackup()}>
           Export backup
         </button>
         <label class="file-button">

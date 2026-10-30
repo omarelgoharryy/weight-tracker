@@ -2,6 +2,8 @@ import { addDays, daysBetween } from '../lib/dates';
 import type { ISODate, WeightEntry } from '../types';
 import { trendAt, trendSeries } from './trend';
 
+const MIN_DOWNWARD_SLOPE = 1e-6; // kg per day; smaller is rounding noise
+
 const latestTrend = (weights: WeightEntry[]): number | null =>
   weights.length ? trendAt(weights, weights[weights.length - 1].date) : null;
 
@@ -36,7 +38,7 @@ export function averageLossPerWeek(weights: WeightEntry[]): number | null {
   return (first - latestTrend(weights)!) / (span / 7);
 }
 
-export function projectGoalDate(weights: WeightEntry[], goalKg: number): ISODate | null {
+export function projectGoalDate(weights: WeightEntry[], goalKg: number, today: ISODate): ISODate | null {
   if (spanDays(weights) < 14) return null;
   const latestDate = weights[weights.length - 1].date;
   if (latestTrend(weights)! <= goalKg) return null;
@@ -49,10 +51,11 @@ export function projectGoalDate(weights: WeightEntry[], goalKg: number): ISODate
   const denominator = xs.reduce((a, x) => a + (x - meanX) ** 2, 0);
   if (denominator === 0) return null;
   const slope = xs.reduce((a, x, i) => a + (x - meanX) * (points[i].value - meanY), 0) / denominator;
-  if (slope >= 0) return null;
+  if (slope > -MIN_DOWNWARD_SLOPE) return null;
 
   const daysFromLatest = Math.ceil((goalKg - meanY) / slope + meanX) - daysBetween(from, latestDate);
-  return addDays(latestDate, Math.max(1, daysFromLatest));
+  const projected = addDays(latestDate, Math.max(1, daysFromLatest));
+  return projected > today ? projected : null;
 }
 
 export function bmi(weights: WeightEntry[], heightCm: number): number | null {

@@ -95,6 +95,73 @@ test('an invalid backup changes nothing', async ({ page }) => {
   await go(page, 'History');
   await expect(page.getByTestId('weight-entry')).toHaveCount(1);
 });
+test('fields show the restored values after an import', async ({ page }) => {
+  await completeSetup(page);
+  await go(page, 'Settings');
+  const backup = {
+    version: 1,
+    exportedAt: '2026-10-30T12:00:00Z',
+    settings: {
+      goalKg: 70,
+      weightUnit: 'lb',
+      lengthUnit: 'cm',
+      heightCm: 180,
+      sex: 'female',
+      measurementDay: 5,
+      celebratedMilestones: [],
+    },
+    weights: [],
+    measurements: [],
+  };
+  await page
+    .getByLabel(/import/i)
+    .setInputFiles({ name: 'b.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(backup)) });
+  await page.getByRole('button', { name: /yes, replace/i }).click();
+  await expect(page.getByLabel(/goal weight/i)).toHaveValue('154.3');
+  await expect(page.getByLabel(/height/i)).toHaveValue('180.0');
+  await expect(page.getByLabel(/biological sex/i)).toHaveValue('female');
+});
+test('switching units does not re-celebrate earned milestones', async ({ page }) => {
+  await completeSetup(page, { goal: '50' });
+  await seedWeights(page, [
+    { date: daysAgoISO(30), kg: 100 },
+    { date: daysAgoISO(1), kg: 92 },
+    { date: daysAgoISO(0), kg: 92 },
+  ]);
+  await setCelebrated(page, ['lost-5kg']);
+  await page.reload();
+  await go(page, 'Settings');
+  await page.getByRole('radio', { name: 'lb' }).click();
+  await expect(page.getByRole('status')).toBeVisible();
+  await go(page, 'Today');
+  await page.getByRole('button', { name: /save/i }).click();
+  await page.waitForTimeout(200);
+  await expect(page.getByTestId('encouragement')).not.toContainText(/lost/);
+});
+test('saving an unchanged goal keeps goal milestones', async ({ page }) => {
+  await completeSetup(page, { goal: '80' });
+  await setCelebrated(page, ['goal-25']);
+  await page.reload();
+  await go(page, 'Settings');
+  await page.getByRole('radio', { name: 'lb' }).click();
+  await expect(page.getByRole('status')).toBeVisible();
+  await page.getByRole('button', { name: /save goal/i }).click();
+  await expect(page.getByRole('status')).toContainText(/goal saved/i);
+  expect(await getCelebrated(page)).toEqual(['goal-25']);
+});
+test('a failed share is reported and not recorded as a backup', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.assign(navigator, {
+      canShare: () => true,
+      share: () => Promise.reject(new DOMException('', 'NotAllowedError')),
+    });
+  });
+  await completeSetup(page);
+  await go(page, 'Settings');
+  await page.getByRole('button', { name: /export/i }).click();
+  await expect(page.getByRole('alert')).toContainText(/not saved/i);
+  await expect(page.getByTestId('last-backup')).toContainText(/never/i);
+});
 test('backup nudge leads to Settings', async ({ page }) => {
   await completeSetup(page);
   await seedWeights(page, [{ date: daysAgoISO(40), kg: 90 }]);

@@ -39,6 +39,15 @@ export function reachedMilestones(weights: WeightEntry[], goalKg: number, unit: 
 export const newMilestones = (reached: string[], celebrated: string[]): string[] =>
   reached.filter((id) => !celebrated.includes(id));
 
+export function celebrateReached(
+  weights: WeightEntry[],
+  goalKg: number,
+  unit: WeightUnit,
+  celebrated: string[],
+): string[] {
+  return [...celebrated, ...newMilestones(reachedMilestones(weights, goalKg, unit), celebrated)];
+}
+
 export const resetGoalMilestones = (celebrated: string[]): string[] => celebrated.filter((id) => !id.startsWith('goal-'));
 
 const milestoneRank = (id: string): number => {

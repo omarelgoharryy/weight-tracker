@@ -43,3 +43,15 @@ test('an out-of-range measurement is rejected', async ({ page }) => {
   await page.getByRole('button', { name: /save/i }).click();
   await expect(page.getByRole('alert')).toBeVisible();
 });
+test('a form left open overnight saves under the new day', async ({ page }) => {
+  await page.clock.install({ time: new Date(2026, 9, 30, 22, 0) });
+  await completeSetup(page);
+  await openCard(page);
+  await page.clock.setFixedTime(new Date(2026, 9, 31, 8, 0));
+  await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+  await page.getByLabel('Waist').fill('90');
+  await page.getByRole('button', { name: /save/i }).click();
+  await page.getByRole('button', { name: /done/i }).click();
+  await page.getByRole('tab', { name: 'History' }).click();
+  await expect(page.getByTestId('measurement-entry')).toContainText('31');
+});
