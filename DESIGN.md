@@ -14,24 +14,26 @@ colors:
   ink-night: "#e9fbf8"
   muted-night: "#bfdeda"
   ground-today: "#cdf1ec"
-  ground-progress: "#ffefc2"
-  ground-history: "#e6f3c4"
+  ground-progress: "#12506b"
+  ground-history: "#ffefc2"
   ground-settings: "#dcebff"
   ground-today-night: "#0c3336"
-  ground-progress-night: "#362909"
-  ground-history-night: "#26340c"
+  ground-progress-night: "#0c3b50"
+  ground-history-night: "#362909"
   ground-settings-night: "#12294a"
   card-today-night: "#124a4d"
-  card-progress-night: "#4d3a12"
-  card-history-night: "#384c14"
+  card-progress-night: "#14506a"
+  card-history-night: "#4d3a12"
   card-settings-night: "#1d3d66"
   soft-today: "#9fe3da"
-  soft-progress: "#ffdf8a"
-  soft-history: "#cfe68f"
+  soft-progress: "#b4d5e3"
+  soft-history: "#ffdf8a"
+  measure: "#1fd65f"
+  on-measure: "#05260f"
   soft-settings: "#bcd8fb"
   tint-1-night: "#14696b"
   tint-2-night: "#6f5414"
-  tint-3-night: "#4a6a1a"
+  tint-3-night: "#2b6a84"
   tint-4-night: "#265a92"
   hue-neck: "#6a7d10"
   hue-chest: "#2a6fc4"
@@ -145,9 +147,9 @@ Two earlier looks were rejected for being static and monotone, so colour and mot
 
 ## Colors
 
-Each tab owns one ground: aqua for Today, honey for Progress, pistachio for History, sky for Settings. Dark mode keeps the same four hues as deep grounds with saturated cards, never a neutral grey. The ground crossfades when the tab changes and the status bar follows it. `--soft` and `--field` derive from the ground, so bars, selected states and fields shift with each screen.
+Each tab owns one ground: aqua for Today, petroleum blue for Progress, honey for History, sky for Settings. Progress is dark in both themes, so text sitting directly on it is white; its cards stay light. Dark mode keeps the same four hues as deep grounds with saturated cards, never a neutral grey. The ground crossfades when the tab changes and the status bar follows it. `--soft` and `--field` derive from the ground, so bars, selected states and fields shift with each screen.
 
-Teal is the one action colour. It marks what can be pressed, the selected bar and the goal fill. Each measurement owns one hue on every screen, and stat tiles cycle through the four grounds as tints.
+Teal is the one action colour. It marks what can be pressed, the selected bar and the goal fill. The weekly measurements prompt is the one vibrant green on a card, so it can't be missed. Each measurement owns one hue on every screen, and stat tiles cycle through the four grounds as tints.
 
 No red or alarm colour on normal weight change. A gain and a loss differ by their sign, never by colour alone.
 

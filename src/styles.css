@@ -4,6 +4,7 @@
   --card: #ffffff;
   --field: color-mix(in srgb, var(--ground) 55%, var(--card));
   --ink: #12302f;
+  --on-ground: var(--ink);
   --muted: #3f5f5d;
   --soft: #9fe3da;
   --action: #0d7f7d;
@@ -16,8 +17,11 @@
 
   --tint-1: #cdf1ec;
   --tint-2: #ffefc2;
-  --tint-3: #e6f3c4;
+  --tint-3: #cfe2ea;
   --tint-4: #dcebff;
+
+  --measure: #1fd65f;
+  --on-measure: #05260f;
 
   --hue: var(--action);
   --hue-neck: #6a7d10;
@@ -42,13 +46,15 @@
 }
 
 html[data-tab='progress'] {
-  --ground: #ffefc2;
-  --soft: #ffdf8a;
+  --ground: #12506b;
+  --on-ground: #ffffff;
+  --field: #e0edf2;
+  --soft: #b4d5e3;
 }
 
 html[data-tab='history'] {
-  --ground: #e6f3c4;
-  --soft: #cfe68f;
+  --ground: #ffefc2;
+  --soft: #ffdf8a;
 }
 
 html[data-tab='settings'] {
@@ -73,7 +79,7 @@ html[data-tab='settings'] {
 
     --tint-1: #14696b;
     --tint-2: #6f5414;
-    --tint-3: #4a6a1a;
+    --tint-3: #2b6a84;
     --tint-4: #265a92;
 
     --hue-neck: #c9dc6e;
@@ -86,15 +92,16 @@ html[data-tab='settings'] {
   }
 
   html[data-tab='progress'] {
-    --ground: #362909;
-    --card: #4d3a12;
-    --soft: color-mix(in srgb, #f2c04f 34%, var(--card));
+    --ground: #0c3b50;
+    --card: #14506a;
+    --field: color-mix(in srgb, var(--ground) 55%, var(--card));
+    --soft: color-mix(in srgb, #7fc7e6 34%, var(--card));
   }
 
   html[data-tab='history'] {
-    --ground: #26340c;
-    --card: #384c14;
-    --soft: color-mix(in srgb, #7fe0a0 30%, var(--card));
+    --ground: #362909;
+    --card: #4d3a12;
+    --soft: color-mix(in srgb, #f2c04f 34%, var(--card));
   }
 
   html[data-tab='settings'] {
@@ -234,6 +241,12 @@ input {
 
 .intro {
   padding: 0 4px 2px;
+}
+
+.intro,
+.page > h1,
+.page > .lede {
+  color: var(--on-ground);
 }
 
 .encouragement {
@@ -377,11 +390,11 @@ input {
 }
 
 html[data-tab='progress'] .tab-marker::before {
-  background: var(--tint-2);
+  background: var(--tint-3);
 }
 
 html[data-tab='history'] .tab-marker::before {
-  background: var(--tint-3);
+  background: var(--tint-2);
 }
 
 html[data-tab='settings'] .tab-marker::before {
@@ -773,7 +786,8 @@ html[data-tab='settings'] .tab-marker::before {
   min-height: 60px;
   padding: 0 16px;
   border-radius: var(--radius);
-  background: var(--tint-3);
+  background: var(--measure);
+  color: var(--on-measure);
   font-weight: 900;
   text-align: left;
   transition: transform 160ms var(--ease-out);
