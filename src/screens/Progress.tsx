@@ -47,7 +47,7 @@ function Stats({ data, today }: { data: AppData; today: ISODate }) {
   if (bodyMass !== null) rows.push(['BMI', bodyMass.toFixed(1)]);
 
   return (
-    <dl class="stats" data-testid="stats">
+    <dl class="table" data-testid="stats">
       {rows.map(([name, value]) => (
         <div key={name}>
           <dt>{name}</dt>
@@ -102,9 +102,11 @@ export function Progress({ data, today }: ScreenProps) {
             dots={show(toDisplay(entries))}
             line={show(toDisplay(trendSeries(weights)))}
             goal={kgToDisplay(settings.goalKg, unit)}
+            goalLabel={`Goal ${formatWeight(settings.goalKg, unit)}`}
             label="Weight over time"
             formatValue={formatDisplayWeight}
             emptyText="No entries in this period."
+            water
           />
           <ul class="legend">
             <li>
@@ -113,7 +115,7 @@ export function Progress({ data, today }: ScreenProps) {
             </li>
             <li>
               <span class="key key-trend" />
-              7-day trend
+              Sea level (7-day trend)
             </li>
             <li>
               <span class="key key-goal" />

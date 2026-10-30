@@ -194,16 +194,14 @@ export function History({ data, today, refresh }: ScreenProps) {
         <ul class="entries">
           {[...weights].reverse().map((entry) => (
             <li key={entry.date} data-testid="weight-entry">
-              <div>
-                <strong>{formatWeight(entry.kg, settings.weightUnit)}</strong>
-                <span class="hint">{formatDate(entry.date)}</span>
-                {entry.note && <p>{entry.note}</p>}
-              </div>
+              <span>{formatDate(entry.date)}</span>
+              <strong>{formatWeight(entry.kg, settings.weightUnit)}</strong>
+              {entry.note && <p class="entry-note">{entry.note}</p>}
               <div class="entry-actions">
-                <button class="secondary" onClick={() => setView({ kind: 'weight', entry })}>
+                <button class="text-action" onClick={() => setView({ kind: 'weight', entry })}>
                   Edit
                 </button>
-                <button class="secondary" onClick={() => setDeleting({ kind: 'weight', date: entry.date })}>
+                <button class="text-action" onClick={() => setDeleting({ kind: 'weight', date: entry.date })}>
                   Delete
                 </button>
               </div>
@@ -222,15 +220,13 @@ export function History({ data, today, refresh }: ScreenProps) {
         <ul class="entries">
           {[...measurements].reverse().map((entry) => (
             <li key={entry.date} data-testid="measurement-entry">
-              <div>
-                <strong>{formatDate(entry.date)}</strong>
-                <p>{describeMeasurements(entry, settings.lengthUnit)}</p>
-              </div>
+              <strong class="entry-note">{formatDate(entry.date)}</strong>
+              <p class="entry-note">{describeMeasurements(entry, settings.lengthUnit)}</p>
               <div class="entry-actions">
-                <button class="secondary" onClick={() => setView({ kind: 'measurement', date: entry.date })}>
+                <button class="text-action" onClick={() => setView({ kind: 'measurement', date: entry.date })}>
                   Edit
                 </button>
-                <button class="secondary" onClick={() => setDeleting({ kind: 'measurement', date: entry.date })}>
+                <button class="text-action" onClick={() => setDeleting({ kind: 'measurement', date: entry.date })}>
                   Delete
                 </button>
               </div>

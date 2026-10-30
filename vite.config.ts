@@ -9,7 +9,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
-      workbox: { globPatterns: ['**/*.{js,css,html,png,svg,ico}'] },
+      workbox: { globPatterns: ['**/*.{js,css,html,png,svg,ico,woff2}'] },
       manifest: {
         name: 'Weight Tracker',
         short_name: 'Weight',
@@ -17,8 +17,8 @@ export default defineConfig({
         display: 'standalone',
         start_url: '/weight-tracker/',
         scope: '/weight-tracker/',
-        background_color: '#12322F',
-        theme_color: '#12322F',
+        background_color: '#0F4C5C',
+        theme_color: '#0F4C5C',
         icons: [
           { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
           { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },

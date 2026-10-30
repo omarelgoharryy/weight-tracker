@@ -32,5 +32,13 @@ export const formatDate = (date: ISODate): string =>
     timeZone: 'UTC',
   });
 
+export const formatLongDate = (date: ISODate): string =>
+  new Date(toUTC(date)).toLocaleDateString(undefined, {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    timeZone: 'UTC',
+  });
+
 export const formatShortDate = (date: ISODate): string =>
   new Date(toUTC(date)).toLocaleDateString(undefined, { day: 'numeric', month: 'short', timeZone: 'UTC' });

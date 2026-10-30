@@ -15,20 +15,22 @@ export function App() {
   if (loading) return null;
   if (loadError)
     return (
-      <main class="screen">
-        <h1>Your data could not be opened</h1>
-        <p class="lede">Nothing has been changed. Try again, or restart the app.</p>
-        <button class="primary" onClick={() => void refresh()}>
-          Try again
-        </button>
-      </main>
+      <div class="sea sea-page">
+        <main class="screen">
+          <h1>Your data could not be opened</h1>
+          <p class="lede">Nothing has been changed. Try again, or restart the app.</p>
+          <button class="primary" onClick={() => void refresh()}>
+            Try again
+          </button>
+        </main>
+      </div>
     );
   if (!data) return <Setup onDone={refresh} />;
 
   return (
     <>
+      <InstallBanner />
       <main class="screen">
-        <InstallBanner />
         {tab === 'today' && (
           <Today data={data} today={today} refresh={refresh} onOpenSettings={() => setTab('settings')} />
         )}

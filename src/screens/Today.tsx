@@ -7,7 +7,7 @@ import { MeasurementCard } from '../components/MeasurementCard';
 import { SummaryCard } from '../components/SummaryCard';
 import { putWeight, saveSettings } from '../db/db';
 import { messageFor } from '../encouragement/select';
-import { formatDate, todayISO } from '../lib/dates';
+import { formatLongDate, todayISO } from '../lib/dates';
 import { displayToKg, kgToDisplay, parseDecimal } from '../lib/units';
 import { MeasurementForm } from './MeasurementForm';
 import type { ScreenProps } from '../state/useApp';
@@ -16,6 +16,7 @@ import type { Settings, WeightEntry } from '../types';
 export function Today({ data, today, refresh, onOpenSettings }: ScreenProps & { onOpenSettings(): void }) {
   const { settings, weights, measurements } = data;
   const [measuring, setMeasuring] = useState(false);
+  const [dropKey, setDropKey] = useState<string>();
   const milestoneToday = settings.latestMilestone?.date === today ? settings.latestMilestone.id : undefined;
 
   if (measuring)
@@ -31,15 +32,17 @@ export function Today({ data, today, refresh, onOpenSettings }: ScreenProps & { 
 
   return (
     <>
-      <h1 data-testid="today-date">{formatDate(today)}</h1>
-      <p class="encouragement" data-testid="encouragement">
-        {messageFor(weights, today, milestoneToday)}
-      </p>
-      <WeighIn key={today} data={data} today={today} refresh={refresh} />
+      <section class="sea harbour bleed">
+        <h1 data-testid="today-date">{formatLongDate(today)}</h1>
+        <p class="encouragement" data-testid="encouragement">
+          {messageFor(weights, today, milestoneToday)}
+        </p>
+        <WeighIn key={today} data={data} today={today} refresh={refresh} onSaved={setDropKey} />
+      </section>
+      <SummaryCard data={data} today={today} dropKey={dropKey} />
       {measurementsDue(measurements, settings.measurementDay, today) && (
         <MeasurementCard onOpen={() => setMeasuring(true)} />
       )}
-      <SummaryCard data={data} today={today} />
       {backupNudgeDue(settings, weights, today) && <BackupNudge onOpen={onOpenSettings} />}
       {healthNoteDue(weights, settings.healthNoteDismissedAt, today) && (
         <aside class="note">
@@ -62,6 +65,9 @@ export function Today({ data, today, refresh, onOpenSettings }: ScreenProps & { 
   );
 }
 
+// The decimal point is about 0.4 of a digit wide; the rest pads the caret.
+const digitsWide = (text: string) => Math.max(text.length, 3) - (/[.,]/.test(text || '.') ? 0.6 : 0) + 0.25;
+
 function mergeEntry(weights: WeightEntry[], entry: WeightEntry): WeightEntry[] {
   return [...weights.filter((e) => e.date !== entry.date), entry].sort((a, b) => a.date.localeCompare(b.date));
 }
@@ -80,7 +86,7 @@ function withMilestones(settings: Settings, weights: WeightEntry[], date: string
   };
 }
 
-function WeighIn({ data, today, refresh }: ScreenProps) {
+function WeighIn({ data, today, refresh, onSaved }: ScreenProps & { onSaved(key: string): void }) {
   const { settings, weights } = data;
   const unit = settings.weightUnit;
   const existing = weights.find((e) => e.date === today);
@@ -98,6 +104,7 @@ function WeighIn({ data, today, refresh }: ScreenProps) {
       const updated = withMilestones(settings, mergeEntry(weights, entry), date);
       if (updated) await saveSettings(updated);
       await refresh();
+      onSaved(`${date}-${kg}`);
     } catch {
       setError('Your entry was not saved. Try again.');
     }
@@ -118,16 +125,21 @@ function WeighIn({ data, today, refresh }: ScreenProps) {
   return (
     <form class="weigh-in" onSubmit={submit} noValidate>
       <label class="weigh-field">
-        <span>Weight ({unit})</span>
-        <input
-          inputMode="decimal"
-          autoComplete="off"
-          placeholder="0.0"
-          value={weight}
-          onInput={(e) => setWeight(e.currentTarget.value)}
-        />
+        <span>Weight</span>
+        <span class="weigh-line">
+          <input
+            inputMode="decimal"
+            autoComplete="off"
+            placeholder="0.0"
+            size={Math.max(weight.length, 4)}
+            style={{ width: `${digitsWide(weight)}ch` }}
+            value={weight}
+            onInput={(e) => setWeight(e.currentTarget.value)}
+          />
+          <span class="weigh-unit">{unit}</span>
+        </span>
       </label>
-      <label class="field">
+      <label class="field note-field">
         <span>Note, optional</span>
         <input value={note} onInput={(e) => setNote(e.currentTarget.value)} />
       </label>

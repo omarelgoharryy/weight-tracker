@@ -2,9 +2,11 @@ import {
   averageLossPerWeek,
   bmi,
   currentWeight,
+  lostThisWeek,
   lowestWeight,
   percentToGoal,
   projectGoalDate,
+  remainingToGoal,
   startingWeight,
   totalLost,
 } from '../src/calc/stats';
@@ -62,4 +64,20 @@ test('stats return null for no entries', () => {
   expect(percentToGoal([], 80)).toBeNull();
   expect(projectGoalDate([], 80, TODAY)).toBeNull();
   expect(bmi([], 180)).toBeNull();
+});
+
+test('lostThisWeek compares the trend with a week earlier', () => {
+  const weights = [
+    { date: '2026-10-01', kg: 90 },
+    { date: '2026-10-08', kg: 89 },
+  ];
+  expect(lostThisWeek(weights)).toBeCloseTo(1);
+  expect(lostThisWeek(weights.slice(0, 1))).toBeNull();
+  expect(lostThisWeek([])).toBeNull();
+});
+
+test('remainingToGoal never goes below zero', () => {
+  expect(remainingToGoal([{ date: '2026-10-01', kg: 90 }], 80)).toBe(10);
+  expect(remainingToGoal([{ date: '2026-10-01', kg: 79 }], 80)).toBe(0);
+  expect(remainingToGoal([], 80)).toBeNull();
 });

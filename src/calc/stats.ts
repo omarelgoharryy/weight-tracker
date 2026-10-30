@@ -24,6 +24,18 @@ export function totalLost(weights: WeightEntry[]): number | null {
   return start === null || trend === null ? null : start - trend;
 }
 
+export const remainingToGoal = (weights: WeightEntry[], goalKg: number): number | null => {
+  const trend = latestTrend(weights);
+  return trend === null ? null : Math.max(0, trend - goalKg);
+};
+
+export function lostThisWeek(weights: WeightEntry[]): number | null {
+  if (weights.length === 0) return null;
+  const latestDate = weights[weights.length - 1].date;
+  const weekAgo = trendAt(weights, addDays(latestDate, -7));
+  return weekAgo === null ? null : weekAgo - latestTrend(weights)!;
+}
+
 export function percentToGoal(weights: WeightEntry[], goalKg: number): number | null {
   const start = startingWeight(weights);
   const trend = latestTrend(weights);

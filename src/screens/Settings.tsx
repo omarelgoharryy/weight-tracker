@@ -146,6 +146,7 @@ export function Settings({ data, today, refresh }: ScreenProps) {
 
       <section class="section">
         <h2>Goal</h2>
+        <div class="panel">
         <label class="field">
           <span>Goal weight ({settings.weightUnit})</span>
           <input inputMode="decimal" value={goal} onInput={(e) => setGoal(e.currentTarget.value)} />
@@ -153,10 +154,12 @@ export function Settings({ data, today, refresh }: ScreenProps) {
         <button class="secondary" onClick={saveGoal}>
           Save goal
         </button>
+        </div>
       </section>
 
       <section class="section">
         <h2>Units</h2>
+        <div class="panel">
         <fieldset class="choice">
           <legend>Weight unit</legend>
           {(['kg', 'lb'] as const).map((unit) => (
@@ -185,10 +188,12 @@ export function Settings({ data, today, refresh }: ScreenProps) {
             </label>
           ))}
         </fieldset>
+        </div>
       </section>
 
       <section class="section">
         <h2>Your details</h2>
+        <div class="panel">
         <label class="field">
           <span>Height, optional ({settings.lengthUnit})</span>
           <input inputMode="decimal" value={height} onInput={(e) => setHeight(e.currentTarget.value)} />
@@ -205,10 +210,12 @@ export function Settings({ data, today, refresh }: ScreenProps) {
         <button class="secondary" onClick={saveDetails}>
           Save details
         </button>
+        </div>
       </section>
 
       <section class="section">
         <h2>Weekly measurements</h2>
+        <div class="panel">
         <label class="field">
           <span>Measurement day</span>
           <select
@@ -224,10 +231,12 @@ export function Settings({ data, today, refresh }: ScreenProps) {
             ))}
           </select>
         </label>
+        </div>
       </section>
 
       <section class="section">
         <h2>Backup</h2>
+        <div class="panel">
         <p class="hint" data-testid="last-backup">
           Last backup: {settings.lastBackupAt ? formatDate(settings.lastBackupAt.slice(0, 10)) : 'Never'}
         </p>
@@ -238,14 +247,17 @@ export function Settings({ data, today, refresh }: ScreenProps) {
           Import backup
           <input type="file" accept=".json,application/json" onChange={(e) => void chooseFile(e)} />
         </label>
+        </div>
       </section>
 
       <section class="section">
         <h2>Keeping your data safe</h2>
+        <div class="panel">
         <p class="hint">
           Your data lives only on this phone. Removing the app's home-screen icon deletes it, so export a backup first.
           iPhone and app updates don't affect your data.
         </p>
+        </div>
       </section>
 
       {backup && (

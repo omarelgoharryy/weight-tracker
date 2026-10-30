@@ -47,7 +47,8 @@ export function Setup({ onDone }: { onDone(): Promise<void> }) {
   }
 
   return (
-    <main class="screen">
+    <div class="sea sea-page">
+      <main class="screen">
       <h1>Welcome</h1>
       <p class="lede">A few details first. You can change any of them later in Settings.</p>
       <form class="form" onSubmit={submit} noValidate>
@@ -96,5 +97,6 @@ export function Setup({ onDone }: { onDone(): Promise<void> }) {
         </button>
       </form>
     </main>
+    </div>
   );
 }
