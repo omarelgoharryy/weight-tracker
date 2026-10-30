@@ -17,8 +17,17 @@ import { formatDate } from '../lib/dates';
 import { cmToDisplay, formatChange, formatLength, formatWeight, kgToDisplay } from '../lib/units';
 import type { ScreenProps } from '../state/useApp';
 import { MEASUREMENT_KEYS } from '../types';
-import type { AppData, ISODate } from '../types';
+import type { AppData, ISODate, MeasurementKey } from '../types';
 import { measurementLabel } from './MeasurementForm';
+
+const HUES: Record<MeasurementKey, string> = {
+  neckCm: 'var(--hue-neck)',
+  chestCm: 'var(--hue-chest)',
+  waistCm: 'var(--hue-waist)',
+  hipsCm: 'var(--hue-hips)',
+  armCm: 'var(--hue-arm)',
+  thighCm: 'var(--hue-thigh)',
+};
 
 const RANGES: { id: Range; label: string }[] = [
   { id: '1m', label: '1M' },
@@ -47,9 +56,9 @@ function Stats({ data, today }: { data: AppData; today: ISODate }) {
   if (bodyMass !== null) rows.push(['BMI', bodyMass.toFixed(1)]);
 
   return (
-    <dl class="table" data-testid="stats">
-      {rows.map(([name, value]) => (
-        <div key={name}>
+    <dl class="tiles" data-testid="stats">
+      {rows.map(([name, value], index) => (
+        <div key={name} style={{ '--tile': `var(--tint-${(index % 4) + 1})`, '--d': index }}>
           <dt>{name}</dt>
           <dd>{value}</dd>
         </div>
@@ -89,6 +98,11 @@ export function Progress({ data, today }: ScreenProps) {
     <>
       <h1>Progress</h1>
       <div class="ranges">
+        <span
+          class="range-marker"
+          aria-hidden="true"
+          style={{ transform: `translateX(${RANGES.findIndex(({ id }) => id === range) * 100}%)` }}
+        />
         {RANGES.map(({ id, label }) => (
           <button key={id} class="range" aria-pressed={range === id} onClick={() => setRange(id)}>
             {label}
@@ -98,7 +112,9 @@ export function Progress({ data, today }: ScreenProps) {
 
       {weights.length > 0 && (
         <section class="section">
+          <h2>Weight</h2>
           <LineChart
+            key={range}
             dots={show(toDisplay(entries))}
             line={show(toDisplay(trendSeries(weights)))}
             goal={kgToDisplay(settings.goalKg, unit)}
@@ -106,7 +122,7 @@ export function Progress({ data, today }: ScreenProps) {
             label="Weight over time"
             formatValue={formatDisplayWeight}
             emptyText="No entries in this period."
-            water
+            filled
           />
           <ul class="legend">
             <li>
@@ -115,7 +131,7 @@ export function Progress({ data, today }: ScreenProps) {
             </li>
             <li>
               <span class="key key-trend" />
-              Sea level (7-day trend)
+              7-day trend
             </li>
             <li>
               <span class="key key-goal" />
@@ -126,10 +142,11 @@ export function Progress({ data, today }: ScreenProps) {
         </section>
       )}
 
-      <section class="section">
+      <section class="section" style={{ '--hue': 'var(--hue-fat)' }}>
         <h2>Body fat estimate</h2>
         {fat.length > 0 && <p class="hint">{changeSince(fat, percentText) ?? 'Your first estimate.'}</p>}
         <LineChart
+          key={range}
           dots={show(fat)}
           line={show(fat)}
           label="Body fat estimate over time"
@@ -140,6 +157,7 @@ export function Progress({ data, today }: ScreenProps) {
               : 'Log your waist and neck (plus hips for women), and set your height and sex in Settings.'
           }
           compact
+          filled
         />
         {fat.length > 0 && <p class="hint">An estimate, usually within 3-4 points of a clinical scan.</p>}
       </section>
@@ -152,19 +170,23 @@ export function Progress({ data, today }: ScreenProps) {
         if (points.length === 0) return null;
         const format = (value: number) => `${value.toFixed(1)} ${lengthUnit}`;
         return (
-          <section class="section" key={key}>
-            <h3>{measurementLabel(key)}</h3>
-            <p class="hint">
-              {formatLength(measurements.filter((m) => m[key] !== undefined).at(-1)![key]!, lengthUnit)}
-              {points.length > 1 && `, ${changeSince(points, format)}`}
-            </p>
+          <section class="section" key={key} style={{ '--hue': HUES[key] }}>
+            <div class="measure-head">
+              <h3>{measurementLabel(key)}</h3>
+              <p class="measure-value">
+                {formatLength(measurements.filter((m) => m[key] !== undefined).at(-1)![key]!, lengthUnit)}
+              </p>
+            </div>
+            {points.length > 1 && <p class="hint">{changeSince(points, format)}</p>}
             <LineChart
+              key={range}
               dots={show(points)}
               line={show(points)}
               label={`${measurementLabel(key)} over time`}
               formatValue={format}
               emptyText="No entries in this period."
               compact
+              filled
             />
           </section>
         );

@@ -2,8 +2,9 @@ import { useState } from 'preact/hooks';
 import { needsTypoConfirm, validateDate, validateWeightKg } from '../calc/validation';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { deleteMeasurement, deleteWeight, putWeight } from '../db/db';
-import { formatDate } from '../lib/dates';
-import { displayToKg, formatLength, formatWeight, kgToDisplay, parseDecimal } from '../lib/units';
+import { formatDate, formatDay, formatMonth } from '../lib/dates';
+import { fold } from '../lib/motion';
+import { displayToKg, formatChange, formatLength, formatWeight, kgToDisplay, parseDecimal } from '../lib/units';
 import type { ScreenProps } from '../state/useApp';
 import { MEASUREMENT_KEYS } from '../types';
 import type { ISODate, MeasurementEntry, WeightEntry } from '../types';
@@ -130,6 +131,16 @@ function MeasurementDatePicker({ today, onPick, onCancel }: { today: ISODate; on
   );
 }
 
+function byMonth(entries: WeightEntry[]): { month: string; entries: WeightEntry[] }[] {
+  const months: { month: string; entries: WeightEntry[] }[] = [];
+  for (const entry of entries) {
+    const month = formatMonth(entry.date);
+    if (months.at(-1)?.month !== month) months.push({ month, entries: [] });
+    months.at(-1)!.entries.push(entry);
+  }
+  return months;
+}
+
 function describeMeasurements(entry: MeasurementEntry, unit: 'cm' | 'in'): string {
   return MEASUREMENT_KEYS.flatMap((key) => {
     const cm = entry[key];
@@ -168,6 +179,7 @@ export function History({ data, today, refresh }: ScreenProps) {
   async function confirmDelete(target: Deleting) {
     setDeleting(null);
     try {
+      await fold(document.querySelector(`[data-date="${target.kind}-${target.date}"]`));
       await (target.kind === 'weight' ? deleteWeight(target.date) : deleteMeasurement(target.date));
       await refresh();
     } catch {
@@ -191,23 +203,34 @@ export function History({ data, today, refresh }: ScreenProps) {
           </button>
         </div>
         {weights.length === 0 && <p class="hint">No weigh-ins yet.</p>}
-        <ul class="entries">
-          {[...weights].reverse().map((entry) => (
-            <li key={entry.date} data-testid="weight-entry">
-              <span>{formatDate(entry.date)}</span>
-              <strong>{formatWeight(entry.kg, settings.weightUnit)}</strong>
-              {entry.note && <p class="entry-note">{entry.note}</p>}
-              <div class="entry-actions">
-                <button class="text-action" onClick={() => setView({ kind: 'weight', entry })}>
-                  Edit
-                </button>
-                <button class="text-action" onClick={() => setDeleting({ kind: 'weight', date: entry.date })}>
-                  Delete
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
+        {byMonth([...weights].reverse()).map(({ month, entries }) => (
+          <div key={month}>
+            <h3 class="month">{month}</h3>
+            <ul class="entries">
+              {entries.map((entry) => {
+                const before = weights[weights.indexOf(entry) - 1];
+                return (
+                  <li key={entry.date} data-testid="weight-entry" data-date={`weight-${entry.date}`}>
+                    <span>{formatDay(entry.date)}</span>
+                    <strong>{formatWeight(entry.kg, settings.weightUnit)}</strong>
+                    {entry.note && <p class="entry-note">{entry.note}</p>}
+                    <div class="entry-foot">
+                      {before && <span class="change">{formatChange(before.kg - entry.kg, settings.weightUnit)}</span>}
+                      <div class="entry-actions">
+                        <button class="text-action" onClick={() => setView({ kind: 'weight', entry })}>
+                          Edit
+                        </button>
+                        <button class="text-action" onClick={() => setDeleting({ kind: 'weight', date: entry.date })}>
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
       </section>
       <section class="section">
         <div class="section-head">
@@ -219,16 +242,18 @@ export function History({ data, today, refresh }: ScreenProps) {
         {measurements.length === 0 && <p class="hint">No measurements yet.</p>}
         <ul class="entries">
           {[...measurements].reverse().map((entry) => (
-            <li key={entry.date} data-testid="measurement-entry">
-              <strong class="entry-note">{formatDate(entry.date)}</strong>
+            <li key={entry.date} data-testid="measurement-entry" data-date={`measurement-${entry.date}`}>
+              <span>{formatDay(entry.date)}</span>
               <p class="entry-note">{describeMeasurements(entry, settings.lengthUnit)}</p>
-              <div class="entry-actions">
-                <button class="text-action" onClick={() => setView({ kind: 'measurement', date: entry.date })}>
-                  Edit
-                </button>
-                <button class="text-action" onClick={() => setDeleting({ kind: 'measurement', date: entry.date })}>
-                  Delete
-                </button>
+              <div class="entry-foot">
+                <div class="entry-actions">
+                  <button class="text-action" onClick={() => setView({ kind: 'measurement', date: entry.date })}>
+                    Edit
+                  </button>
+                  <button class="text-action" onClick={() => setDeleting({ kind: 'measurement', date: entry.date })}>
+                    Delete
+                  </button>
+                </div>
               </div>
             </li>
           ))}

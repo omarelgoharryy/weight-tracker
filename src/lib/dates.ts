@@ -42,3 +42,15 @@ export const formatLongDate = (date: ISODate): string =>
 
 export const formatShortDate = (date: ISODate): string =>
   new Date(toUTC(date)).toLocaleDateString(undefined, { day: 'numeric', month: 'short', timeZone: 'UTC' });
+
+export const formatDay = (date: ISODate): string =>
+  new Date(toUTC(date)).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
+
+export const formatMonth = (date: ISODate): string =>
+  new Date(toUTC(date)).toLocaleDateString(undefined, { month: 'long', year: 'numeric', timeZone: 'UTC' });
+
+export const formatDayName = (date: ISODate): string =>
+  new Date(toUTC(date)).toLocaleDateString(undefined, { weekday: 'short', timeZone: 'UTC' });
+
+export const formatDayLetter = (date: ISODate): string =>
+  new Date(toUTC(date)).toLocaleDateString(undefined, { weekday: 'narrow', timeZone: 'UTC' });

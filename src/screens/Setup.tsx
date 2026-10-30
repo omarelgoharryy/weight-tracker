@@ -47,10 +47,12 @@ export function Setup({ onDone }: { onDone(): Promise<void> }) {
   }
 
   return (
-    <div class="sea sea-page">
-      <main class="screen">
-      <h1>Welcome</h1>
-      <p class="lede">A few details first. You can change any of them later in Settings.</p>
+    <main class="screen">
+      <div class="page">
+      <header class="intro">
+        <h1>Welcome</h1>
+        <p class="lede">A few details first. You can change any of them later in Settings.</p>
+      </header>
       <form class="form" onSubmit={submit} noValidate>
         <fieldset class="choice">
           <legend>Weight unit</legend>
@@ -96,7 +98,7 @@ export function Setup({ onDone }: { onDone(): Promise<void> }) {
           Get started
         </button>
       </form>
+      </div>
     </main>
-    </div>
   );
 }

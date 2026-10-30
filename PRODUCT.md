@@ -37,7 +37,7 @@ The daily use is short: open the app, enter one number, save, read how the trend
 
 ## Brand Commitments
 
-Name: Weight Tracker, shown on the home screen as "Weight". Voice: always kind, never shaming, focused on the trend rather than single days. Missed days are never scolded. The visual identity is open and is being replaced.
+Name: Weight Tracker, shown on the home screen as "Weight". Voice: always kind, never shaming, focused on the trend rather than single days. Missed days are never scolded. The visual identity is Friendly Cards: warm, colourful and responsive to touch. The owner rejected two earlier looks for being static and monotone, so colour and motion are requirements, not polish.
 
 The product must not feel clinical or medical. It must not read like a hospital chart or a health-insurance app. The user did not rule out warm, playful or data-rich treatments.
 

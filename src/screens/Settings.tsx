@@ -142,7 +142,11 @@ export function Settings({ data, today, refresh }: ScreenProps) {
           {error}
         </p>
       )}
-      {status && <p role="status">{status}</p>}
+      {status && (
+        <p class="status" role="status" key={status}>
+          {status}
+        </p>
+      )}
 
       <section class="section">
         <h2>Goal</h2>
